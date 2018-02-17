@@ -5,7 +5,7 @@ describe('Updating records', () => {
     let tomek;
 
     beforeEach( (done) => {
-        tomek = new User({ name: 'Tomek'});
+        tomek = new User({ name: 'Tomek', postCount: 0});
         tomek.save()
             .then( () => done());
     });
@@ -48,5 +48,14 @@ describe('Updating records', () => {
             User.findByIdAndUpdate(tomek._id, { name: 'Dawid'}),
             done
         );
+    });
+
+    it('The user can have their postcount incremented by 1', (done) => {
+        User.update({ name: 'Tomek' }, { $inc: { postCount: 1 } })
+            .then( () => User.findOne({ name: 'Tomek'}))
+            .then( (user) => {
+                assert(user.postCount === 1);
+                done();
+            });
     });
 });
